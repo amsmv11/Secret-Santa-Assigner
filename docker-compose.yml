@@ -1,0 +1,33 @@
+version: "1"
+
+x-env: &environment
+  environment:
+    DATABASE_URL: "postgresql://postgres:postgres@pg_db:5432/secret_santa_db"
+    # DATABASE_URL: "postgresql://postgres:postgres@localhost:5440/secret_santa_db"
+
+services:
+  webapi:
+    <<: *environment
+    build: .
+    volumes:
+      - .:/projects
+    ports:
+      - "8000:8000"
+    depends_on:
+      - pg_db
+    command: uvicorn main:create_app --reload --host 0.0.0.0 --port 8000
+
+
+  pg_db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=secret_santa_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5439:5432"
+
+volumes:
+  db_data:

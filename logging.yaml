@@ -1,0 +1,51 @@
+---
+version: 1
+disable_existing_loggers: False
+# Note that setting the above as False results in the printing of logs from existing loggers.
+# True is the default setting.
+
+formatters:
+  simple:
+    format: "%(asctime)-8s %(levelname)-8s %(filename)-24s %(funcName)-12s Message: %(message)s"
+    datefmt: "%d-%m-%Y %I:%M:%S %p %Z"
+  extended:
+    format: "%(asctime)-12s %(levelname)-8s %(filename)-16s %(funcName)-12s %(threadName)-8s Message: %(message)s"
+    datefmt: "%d-%m-%Y %I:%M:%S %p %Z"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+
+  info_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    filename: "logs/info.log"
+    formatter: extended
+    maxBytes: 10485760 # 10MB
+    backupCount: 20
+    mode: "a"
+    encoding: utf8
+
+  error_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: extended
+    filename: "logs/errors.log"
+    maxBytes: 10485760 # 10MB
+    backupCount: 20
+    mode: "a"
+    encoding: utf8
+
+loggers:
+  my_module:
+    level: ERROR
+    handlers: [console]
+    propagate: False
+
+root:
+  level: DEBUG
+  handlers: [console, info_file_handler, error_file_handler]
+  propagate: False
