@@ -19,6 +19,7 @@ pylint = "^3.0.2"
 alembic = "^1.12.1"
 psycopg2 = "^2.9.9"
 pydantic = "<2.0.0"
+yagmail = "^0.15.293"
 
 
 [build-system]

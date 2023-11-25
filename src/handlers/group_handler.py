@@ -3,10 +3,12 @@ import uuid
 from datetime import datetime
 from uuid import UUID
 
-from fastapi import HTTPException
+import yagmail
+from fastapi import BackgroundTasks, HTTPException
 
 from src.models.group import Group, GroupModel, GroupStatus
 from src.services import group_services, user_services
+from src.services.mail_services import send_email
 from src.values.group_values import CreateGroupRequest
 from src.values.user_values import SecretSantaUser
 
@@ -72,8 +74,7 @@ def list_groups_by_username(
 
 
 def assign_secret_santa(
-    owner_username: str,
-    group_id: UUID,
+    owner_username: str, group_id: UUID, smtp_session: yagmail.SMTP, background_tasks: BackgroundTasks
 ) -> None:
     owner_user = user_services.get_user_by_name(owner_username)
     group = group_services.get_group_by_id(group_id)
@@ -121,5 +122,6 @@ def assign_secret_santa(
 
     user.surprisee = first_user
     assigned_users.append(user)
-
-    # TODO take the assigned users and send emails to them
+    if assigned_users:
+        for user in assigned_users:
+            background_tasks.add_task(send_email, smtp_session, user, group)
