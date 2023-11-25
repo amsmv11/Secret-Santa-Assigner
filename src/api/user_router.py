@@ -14,7 +14,7 @@ router = APIRouter()
 @router.post("", description="Creates a user.")
 async def create_user(
     create_user_request: CreateUserRequest,
-) -> User:
+) -> User | None:
     """Endpoint for creating a user."""
     logger.info(f"{create_user_request=}")
 

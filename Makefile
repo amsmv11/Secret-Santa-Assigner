@@ -1,5 +1,8 @@
 .PHONY: build clean up stop lint uni-tests integration-tests
 
+make local-build:
+	./scripts/local-build.sh
+
 build:
 	docker-compose build && \
 	docker-compose up -d && \

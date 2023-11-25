@@ -1,22 +1,12 @@
-import uuid
-from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import select, update
 
 from src.models.user import User, UserModel
 from src.services.database import session
-from src.values.user_values import CreateUserRequest
 
 
-def create_user(create_user_request: CreateUserRequest) -> User:
-    user = UserModel(
-        id=uuid.uuid4(),
-        name=create_user_request.name,
-        email=create_user_request.email,
-        created_at=datetime.utcnow(),
-        group_id=None,
-    )
+def create_user(user: UserModel) -> User:
     session.add(user)
     session.commit()
 
@@ -25,26 +15,32 @@ def create_user(create_user_request: CreateUserRequest) -> User:
 
 def get_user_by_email(email: str) -> User | None:
     query = select(UserModel).where(UserModel.email == email)
-    user = session.execute(query).unique().scalar_one_or_none()
-    session.commit()
+    user = session.execute(query).first()
 
-    return User.from_model(user)
+    if not user:
+        return None
+
+    return User.from_model(user[0])
 
 
 def get_user_by_name(name: str) -> User | None:
     query = select(UserModel).where(UserModel.name == name)
-    user = session.execute(query).unique().scalar_one_or_none()
-    session.commit()
+    user = session.execute(query).first()
 
-    return User.from_model(user)
+    if not user:
+        return None
+
+    return User.from_model(user[0])
 
 
 def get_user_by_id(user_id: UUID) -> User | None:
     query = select(UserModel).where(UserModel.id == user_id)
-    user = session.execute(query).unique().scalar_one_or_none()
-    session.commit()
+    user = session.execute(query).first()
 
-    return User.from_model(user)
+    if not user:
+        return None
+
+    return User.from_model(user[0])
 
 
 def associate_user_with_group(user_id: UUID, group_id: UUID) -> None:
@@ -56,5 +52,8 @@ def associate_user_with_group(user_id: UUID, group_id: UUID) -> None:
 def list_users_by_group_id(group_id: UUID) -> list[User] | None:
     query = select(UserModel).where(UserModel.group_id == group_id)
     users = session.execute(query).all()
-    session.commit()
-    return [User.from_model(user) for user in users]
+
+    if not users:
+        return None
+
+    return [User.from_model(user[0]) for user in users]

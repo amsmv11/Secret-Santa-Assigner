@@ -31,6 +31,8 @@ def upgrade() -> None:
     op.create_index(op.f("ix_user_name"), "user", ["name"], unique=False)
     op.add_column("group", sa.Column("description", sa.String(), nullable=False))
     op.create_index(op.f("ix_group_description"), "group", ["description"], unique=False)
+
+    op.execute('ALTER TABLE "user" ADD CONSTRAINT unique_username_and_email UNIQUE (name,email);')
     # ### end Alembic commands ###
 
 

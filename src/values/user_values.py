@@ -14,4 +14,4 @@ class SecretSantaUser(BaseModel):
     """Model used to link users in a group for secret santa."""
 
     santa: User
-    surprisee: User = None
+    surprisee: User | None = None

@@ -1,0 +1,19 @@
+version: "1"
+
+x-env: &environment
+
+services:
+
+  pg_db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=secret_santa_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5439:5432"
+
+volumes:
+  db_data:

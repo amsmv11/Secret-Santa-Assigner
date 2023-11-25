@@ -28,11 +28,11 @@ async def add_user_to_group(
     owner_username: str,
     group_id: UUID,
     username: str,
-) -> Group | None:
+) -> None:
     """Endpoint for adding an user to a group."""
     logger.info("owner %s, group_id %s, username %s", owner_username, group_id, username)
 
-    return group_handler.add_user_to_group(owner_username, group_id, username)
+    group_handler.add_user_to_group(owner_username, group_id, username)
 
 
 @router.get("", description="Gets all groups for one user.")
