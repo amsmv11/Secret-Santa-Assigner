@@ -20,15 +20,15 @@ ENV PYTHONFAULTHANDLER=1 \
 RUN pip install "poetry==$POETRY_VERSION"
 
 # Copy only requirements to cache them in docker layer
-WORKDIR /secret_santa
-COPY poetry.lock pyproject.toml /secret_santa/
+WORKDIR /Secret-Santa-Assigner
+COPY poetry.lock pyproject.toml /Secret-Santa-Assigner/
 
 RUN poetry config virtualenvs.create false &&\
     poetry install --no-interaction --no-ansi
 
-COPY . /secret_santa
+COPY . /Secret-Santa-Assigner
 
-RUN chown -R app:app /secret_santa && chmod 777 /secret_santa
+RUN chown -R app:app /Secret-Santa-Assigner && chmod 777 /Secret-Santa-Assigner
 
 USER app
 

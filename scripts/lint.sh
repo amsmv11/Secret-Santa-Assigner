@@ -12,7 +12,7 @@ fi
 
 # Run  isort, flake8, black, pylint and mypy on all files
 
-isort --profile black -w ${LINE_LENGTH} ${ISORT_ARGS} src/ api.py
+isort --profile black -w ${LINE_LENGTH} ${ISORT_ARGS} src/ main.py
 if [ $? -ne 0 ];
 then
     echo "isort failed ❌"
@@ -30,7 +30,7 @@ then
 fi
 echo "Black ✅"
 
-flake8  --max-line-length ${LINE_LENGTH} --ignore E203,W503 src/ api.py
+flake8  --max-line-length ${LINE_LENGTH} --ignore E203,W503 src/ main.py
 if [ $? -ne 0 ];
 then
     echo "Flake8 failed ❌"
