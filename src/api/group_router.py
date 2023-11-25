@@ -1,10 +1,12 @@
 import logging
 from uuid import UUID  # ignore C0114
 
-from fastapi import APIRouter
+import yagmail  # ignore C0114
+from fastapi import APIRouter, BackgroundTasks, Depends
 
 from src.handlers import group_handler
 from src.models.group import Group
+from src.services.mail_services import generate_smtp_session
 from src.values.group_values import CreateGroupRequest
 
 logger = logging.getLogger()
@@ -51,8 +53,10 @@ async def list_groups(
 async def assign_secret_santa(
     owner_username: str,
     group_id: UUID,
+    background_tasks: BackgroundTasks,
+    smtp_session: yagmail.SMTP = Depends(generate_smtp_session),
 ) -> None:
     """Endpoint for assigning secret santas to all users in a group."""
     logger.info("owner %s, group_id %s", owner_username, group_id)
 
-    group_handler.assign_secret_santa(owner_username, group_id)
+    group_handler.assign_secret_santa(owner_username, group_id, smtp_session, background_tasks)
